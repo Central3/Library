@@ -1,7 +1,7 @@
 const table = document.querySelector("table");
 const tableBody = table.querySelector("tbody");
-const addBtn = document.querySelector(".add-btn");
 const bookTitle = document.querySelector("#title");
+const addBookForm = document.querySelector(".add-book-form");
 const bookAuthor = document.querySelector("#author");
 const pages = document.querySelector("#pages");
 const readStatus = document.querySelector("#read");
@@ -26,17 +26,24 @@ function addBookToLibrary(title, author, pages, read) {
 }
 
 function displayLibrary() {
-    /* TODO:
-        1. Add a checkbox for the last column (Read status)
-    */
+    clearDisplay();
+
     myLibrary.forEach((book, index) => {
         let row = tableBody.insertRow();
         let serialNumberCell = row.insertCell(0);
         serialNumberCell.innerHTML = index + 1;
 
-        Object.keys(book).forEach((key) => {
+        Object.keys(book).forEach((key, index) => {
             let cell = row.insertCell();
-            cell.innerHTML = book[key];
+            if (index === Object.keys(book).length - 1) {
+                let checkbox = document.createElement("input");
+                checkbox.type = "checkbox";
+                checkbox.name = "read";
+                checkbox.checked = book[key];
+                cell.appendChild(checkbox);
+            } else {
+                cell.innerHTML = book[key];
+            }
         });
     });
 }
@@ -53,7 +60,7 @@ addBookToLibrary("Gerald's game", "stephen king", 480, false);
 
 displayLibrary();
 
-addBtn.addEventListener("click", (event) => {
+addBookForm.addEventListener("submit", (event) => {
     event.preventDefault();
 
     addBookToLibrary(
@@ -63,6 +70,7 @@ addBtn.addEventListener("click", (event) => {
         readStatus.checked
     );
 
-    clearDisplay();
+    addBookForm.reset();
+
     displayLibrary();
 });
