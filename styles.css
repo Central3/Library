@@ -82,3 +82,8 @@ label {
 form div {
     margin-bottom: 8px;
 }
+
+.delete-btn {
+    background-color: red;
+    color: #fff;
+}

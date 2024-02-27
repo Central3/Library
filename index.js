@@ -46,12 +46,36 @@ function displayLibrary() {
             }
         });
     });
+
+    addDeleteBtn();
 }
 
 function clearDisplay() {
     while (tableBody.firstChild) {
         tableBody.firstChild.remove();
     }
+}
+
+function deleteBook(ele) {
+    let book = ele.parentElement.parentElement.childNodes[1].textContent;
+
+    myLibrary.forEach((item, index) => {
+        if (item.title === book) {
+            myLibrary.splice(index, 1);
+        }
+    });
+
+    displayLibrary();
+}
+
+function addDeleteBtn() {
+    tableBody.childNodes.forEach((node) => {
+        const deleteBtn = document.createElement("button");
+        deleteBtn.textContent = "Delete";
+        deleteBtn.classList.add("delete-btn");
+        let cell = node.insertCell();
+        cell.appendChild(deleteBtn);
+    });
 }
 
 addBookToLibrary("Game of thrones", "George RR Martin", 596, true);
@@ -73,4 +97,10 @@ addBookForm.addEventListener("submit", (event) => {
     addBookForm.reset();
 
     displayLibrary();
+});
+
+table.addEventListener("click", (event) => {
+    if (event.target.tagName === "BUTTON") {
+        deleteBook(event.target);
+    }
 });
