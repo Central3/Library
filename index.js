@@ -6,29 +6,47 @@ const bookAuthor = document.querySelector("#author");
 const pages = document.querySelector("#pages");
 const readStatus = document.querySelector("#read");
 
-const myLibrary = [];
+class Book {
+    constructor(title, author, pages, read) {
+        this.title = title;
+        this.author = author;
+        this.pages = pages;
+        this.read = read;
+    }
 
-const Book = function (title, author, pages, read) {
-    this.title = title;
-    this.author = author;
-    this.pages = pages;
-    this.read = read;
-};
-
-Book.prototype.info = function () {
-    return `${this.name}`;
-};
-
-function addBookToLibrary(title, author, pages, read) {
-    let newBook = new Book(title, author, pages, read);
-
-    myLibrary.push(newBook);
+    info() {
+        return `${this.name}`;
+    }
 }
+
+class Library {
+    #books = [];
+
+    get books() {
+        return this.#books;
+    }
+
+    addBookToLibrary(title, author, pages, read) {
+        let newBook = new Book(title, author, pages, read);
+
+        this.#books.push(newBook);
+    }
+
+    deleteBook(bookTitle) {
+        this.#books.forEach((item, index) => {
+            if (item.title === bookTitle) {
+                this.#books.splice(index, 1);
+            }
+        });
+    }
+}
+
+let newLibrary = new Library();
 
 function displayLibrary() {
     clearDisplay();
 
-    myLibrary.forEach((book, index) => {
+    newLibrary.books.forEach((book, index) => {
         let row = tableBody.insertRow();
         let serialNumberCell = row.insertCell(0);
         serialNumberCell.innerHTML = index + 1;
@@ -56,18 +74,6 @@ function clearDisplay() {
     }
 }
 
-function deleteBook(ele) {
-    let book = ele.parentElement.parentElement.childNodes[1].textContent;
-
-    myLibrary.forEach((item, index) => {
-        if (item.title === book) {
-            myLibrary.splice(index, 1);
-        }
-    });
-
-    displayLibrary();
-}
-
 function addDeleteBtn() {
     tableBody.childNodes.forEach((node) => {
         const deleteBtn = document.createElement("button");
@@ -78,16 +84,12 @@ function addDeleteBtn() {
     });
 }
 
-addBookToLibrary("Game of thrones", "George RR Martin", 596, true);
-addBookToLibrary("The Shining", "Stephen King", 490, false);
-addBookToLibrary("Gerald's game", "stephen king", 480, false);
-
 displayLibrary();
 
 addBookForm.addEventListener("submit", (event) => {
     event.preventDefault();
 
-    addBookToLibrary(
+    newLibrary.addBookToLibrary(
         bookTitle.value,
         bookAuthor.value,
         pages.value,
@@ -101,6 +103,10 @@ addBookForm.addEventListener("submit", (event) => {
 
 table.addEventListener("click", (event) => {
     if (event.target.tagName === "BUTTON") {
-        deleteBook(event.target);
+        let bookTitle =
+            event.target.parentElement.parentElement.childNodes[1].textContent;
+        newLibrary.deleteBook(bookTitle);
     }
+
+    displayLibrary();
 });
