@@ -5,6 +5,7 @@ const addBookForm = document.querySelector(".add-book-form");
 const bookAuthor = document.querySelector("#author");
 const pages = document.querySelector("#pages");
 const readStatus = document.querySelector("#read");
+const errorStatus = document.querySelector(".error");
 
 class Book {
     constructor(title, author, pages, read) {
@@ -86,8 +87,61 @@ function addDeleteBtn() {
 
 displayLibrary();
 
+function showError(message) {
+    errorStatus.classList.add("active");
+    errorStatus.textContent = message;
+}
+
+function clearError() {
+    errorStatus.textContent = "";
+    errorStatus.classList.remove("active");
+}
+
+bookTitle.addEventListener("input", () => {
+    if (bookTitle.validity.tooShort) {
+        showError("The title is too short.");
+    } else {
+        clearError();
+    }
+});
+
+bookAuthor.addEventListener("input", () => {
+    if (bookAuthor.validity.tooShort) {
+        showError("Author name is too short.");
+    } else {
+        clearError();
+    }
+});
+
+pages.addEventListener("input", () => {
+    if (pages.validity.rangeUnderflow) {
+        showError("Number of pages must be at least 1.");
+    } else {
+        clearError();
+    }
+});
+
 addBookForm.addEventListener("submit", (event) => {
     event.preventDefault();
+
+    if (bookTitle.validity.valueMissing) {
+        showError("Please enter the book title.");
+        bookTitle.reportValidity();
+        return;
+    }
+    if (bookAuthor.validity.valueMissing) {
+        showError("Please enter the book author.");
+        bookAuthor.reportValidity();
+        return;
+    }
+
+    if (
+        bookTitle.validity.tooShort ||
+        bookAuthor.validity.tooShort ||
+        pages.validity.rangeUnderflow
+    ) {
+        return;
+    }
 
     newLibrary.addBookToLibrary(
         bookTitle.value,

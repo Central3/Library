@@ -87,3 +87,18 @@ form div {
     background-color: red;
     color: #fff;
 }
+
+#title:invalid,
+#author:invalid,
+#pages:invalid {
+    border: 2px solid red;
+}
+
+.error {
+    display: none;
+    color: red;
+}
+
+.active {
+    display: block;
+}
